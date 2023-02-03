@@ -18,11 +18,13 @@ public class EnemyBase : MonoBehaviour
     //Oyunun managerine erişmek için çağırma.
     [SerializeField] internal GameManager gameManager;
 
-    //Düşmanın oyuncuyu bulması için bir nesne çağırma.
-    internal GameObject _player;
+    //Düşmanın oyuncular için liste.
+    [SerializeField] internal List<GameObject> enemys;
     
     //Oyunun başladığını test etmek için bir değer.
     internal bool isGameStart;
+    //Karakterin ölümü için değer.
+    internal bool isDead;
     private void Awake() 
     {
         //GameManager objesini bulmak için scripti ile hiyerarşide arama.
@@ -35,8 +37,7 @@ public class EnemyBase : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Hiyerarşide oyuncuyu ismine göre bulmak.
-        _player = GameObject.Find("Player");
+       isDead = false;
     }
 
     // Update is called once per frame

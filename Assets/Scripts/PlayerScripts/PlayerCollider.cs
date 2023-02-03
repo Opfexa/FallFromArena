@@ -31,7 +31,7 @@ public class PlayerCollider : MonoBehaviour
         if(other.gameObject.name == "DeathZone")
         {
             Debug.Log("Öldün");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            playerBase.gameManager.LoseGame();
         }
 
         //Karakterin yiyecekler ile teması.

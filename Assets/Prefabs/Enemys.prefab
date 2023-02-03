@@ -1229,6 +1229,10 @@ MonoBehaviour:
   enemyAnimation: {fileID: 2257156045687814998}
   enemyCollision: {fileID: 2257156045687814999}
   gameManager: {fileID: 0}
+  enemys:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &287122238226829071
 GameObject:
   m_ObjectHideFlags: 0

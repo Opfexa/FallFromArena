@@ -16,9 +16,6 @@ public class EnemyMovement : MonoBehaviour
     //Koşabilme durumunu belirten değer.
     internal bool canRun;
 
-    //Oyuncu ile arasındaki uzaklığı belirten değer.
-    float distance;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -29,27 +26,49 @@ public class EnemyMovement : MonoBehaviour
     // FixedUpdate ile daha verimli bir fizik kazandırması.
     void FixedUpdate()
     {
-        //Oyuncu ile karakter arası uzaklık hesaplama.
-        distance = Vector3.Distance(transform.position, enemyBase._player.transform.position);
-
-        EnemyRun();
-        LookAtPlayer();
+        if(enemyBase.isGameStart)
+        {
+            EnemyRun();
+            LookAtPlayer();
+        }
+        
     }
     
     //Karakterin oyuncuya bakması.
     void LookAtPlayer()
     {
-        transform.LookAt(new Vector3(enemyBase._player.transform.position.x,transform.position.y,enemyBase._player.transform.position.z));
+        transform.LookAt(new Vector3(FindClosestEnemy().transform.position.x,transform.position.y,FindClosestEnemy().transform.position.z));
     }
 
     //Karakterin koşmasını kontrol ettikten sonra oyuncuya doğru konşması
     void EnemyRun()
     {
-        if(canRun && enemyBase.isGameStart)
+        if(canRun)
         {
-            transform.position = Vector3.MoveTowards(this.transform.position, enemyBase._player.transform.position, enemySpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(this.transform.position, FindClosestEnemy().transform.position, enemySpeed * Time.deltaTime);
         }
-        
+    }
+    //En yakındaki düşmanı bulma.
+    public GameObject FindClosestEnemy()
+    {
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in enemyBase.enemys)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+                if(closest.name != "Player" && closest.GetComponent<EnemyBase>().isDead)
+                {
+                    enemyBase.enemys.Remove(closest);
+                }
+            }
+        }
+        return closest;
     }
     
 }

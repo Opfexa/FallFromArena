@@ -14,7 +14,7 @@ public class FoodScript : MonoBehaviour
     private void OnTriggerEnter(Collider other) 
     {
         //Oyuncuya değdiklerinde yok olmaları.
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.name == "Player")
         {
             Destroy(gameObject);
         }    

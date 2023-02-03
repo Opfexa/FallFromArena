@@ -13,6 +13,7 @@ public class PlayerBase : MonoBehaviour
     
     //Joystick' e erişim.
     [SerializeField] internal FixedJoystick joystick;
+    [SerializeField] internal GameManager gameManager;
 
     //Zorunlu bileşenlerin değeri.
     internal Rigidbody playerRigid;
@@ -30,5 +31,6 @@ public class PlayerBase : MonoBehaviour
     void Start()
     {
        isGameStart = false;
+       gameManager = GameObject.FindObjectOfType<GameManager>();
     }
 }

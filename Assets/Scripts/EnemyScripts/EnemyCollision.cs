@@ -12,7 +12,7 @@ public class EnemyCollision : MonoBehaviour
 
     private void OnCollisionEnter(Collision other) 
     {
-        if(other.gameObject.tag == "Player")
+        if(other.gameObject.tag == "Enemy")
         {
             //Karakterin çarpması anında animasyon girmesi.
             enemyBase.enemyAnimation.EnemyGetHit();
@@ -30,7 +30,8 @@ public class EnemyCollision : MonoBehaviour
         {
             Debug.Log("Öldün");
             enemyBase.gameManager.score += 100;
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+            enemyBase.isDead = true;
         }
     }
 }

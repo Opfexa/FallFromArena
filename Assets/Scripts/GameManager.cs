@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -17,8 +18,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject startButton;
     [SerializeField] GameObject pauseButton;
     [SerializeField] GameObject pausePanel;
+    [SerializeField] GameObject winPanel;
+    [SerializeField] GameObject losePanel;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI countDownText;
+    [SerializeField] TextMeshProUGUI gameCountDownText;
 
     //Oyun skorunun tutulduğu değer.
     internal int score;
@@ -30,6 +34,8 @@ public class GameManager : MonoBehaviour
     internal bool startCountDown;
     //Geri sayım değeri.
     private float countDownValue = 3;
+
+    private float gameCountDownValue = 30;
     // Start is called before the first frame update
     void Awake()
     {
@@ -44,11 +50,15 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         scoreText.text = "Score: " + score;
-
+        gameCountDownText.text = Mathf.RoundToInt(gameCountDownValue).ToString();
         if(startCountDown)
         {
             countDownText.text = Mathf.RoundToInt(countDownValue).ToString();
             CountDown();
+        }
+        if(score == 300)
+        {
+            WinGame();
         }
     }
     
@@ -67,7 +77,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         //Nesnelerin oluşturulması için geri sayımın başlatılması.
         StartCoroutine(FoodSpawnTimer());
-        StartCoroutine(EnemySpawnTimer());
     }
     //Oyun başlangıcı geri sayımı.
     void CountDown()
@@ -81,6 +90,19 @@ public class GameManager : MonoBehaviour
             gameStart =true;
             player.isGameStart = true;
             countDownText.gameObject.SetActive(false);
+            GameCountDown();
+        }
+    }
+    //Oyunun geri sayımı.
+    void GameCountDown()
+    {
+        if(gameCountDownValue > 0)
+        {
+            gameCountDownValue -= Time.deltaTime;
+        }
+        else if(gameCountDownValue < 0)
+        {
+            WinGame();
         }
     }
     //Oyunu durdurma sırasında UI nesnelerinin açılıp kapatılması.
@@ -92,7 +114,6 @@ public class GameManager : MonoBehaviour
         joystick.SetActive(false);
         pausePanel.SetActive(true);
         countDownText.gameObject.SetActive(false);
-        //Oyunun içindeki zamanın durdurulması.
         Time.timeScale = 0;
         
     }
@@ -101,6 +122,28 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
     }
+    //Tekrar başlama.
+    internal void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    //Kazanma Ekranı
+    internal void WinGame()
+    {
+        Time.timeScale = 0;
+        joystick.SetActive(false);
+        pauseButton.SetActive(false);
+        winPanel.SetActive(true);
+    }
+    //Kaybetme Ekranı
+    internal void LoseGame()
+    {
+        Time.timeScale = 0;
+        joystick.SetActive(false);
+        pauseButton.SetActive(false);
+        losePanel.SetActive(true);
+    }
+
     //Arenada rasgele bir alan belirlemek.
     private Vector3 RandomPos()
     {
@@ -113,11 +156,7 @@ public class GameManager : MonoBehaviour
         Instantiate(ham,new Vector3(RandomPos().x,0.2f,RandomPos().y),Quaternion.identity);
         Instantiate(steak,new Vector3(RandomPos().x,0.2f,RandomPos().y),Quaternion.identity);
     }
-    // Rastgele düşman oluşturulması.
-    private void SpawnEnemy()
-    {
-        Instantiate(enemy,new Vector3(RandomPos().x,0.2f,RandomPos().y),Quaternion.identity);
-    }
+    
     //Arenanın alanını ölçmek için çizilen iki boyutlu çember.
     private void OnDrawGizmos() {
         Gizmos.color = Color.green;
@@ -130,11 +169,5 @@ public class GameManager : MonoBehaviour
         SpawnFood();
         StartCoroutine(FoodSpawnTimer());
     }
-    //Düşmanların oluşturulması için geri sayım.
-    IEnumerator EnemySpawnTimer()
-    {
-        yield return new WaitForSeconds(15);
-        SpawnEnemy();
-        StartCoroutine(EnemySpawnTimer());
-    }
+    
 }

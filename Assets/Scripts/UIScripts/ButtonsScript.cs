@@ -27,4 +27,9 @@ public class ButtonsScript : MonoBehaviour
     {
         _gameManager.QuitGame();
     }
+    //Oyunu yeniden başlatma.
+    public void RestartGame()
+    {
+        _gameManager.RestartGame();
+    }
 }
